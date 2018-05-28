@@ -2,33 +2,48 @@
 title: Changelog | Stash
 description: Changelog
 menu:
-  product_stash_0.7.0-rc.3:
+  product_stash_0.7.0-rc.5:
     identifier: changelog-stash
     name: Changelog
     parent: welcome
     weight: 10
 product_name: stash
-menu_name: product_stash_0.7.0-rc.3
+menu_name: product_stash_0.7.0-rc.5
 section_menu_id: welcome
-url: /products/stash/0.7.0-rc.3/welcome/changelog/
+url: /products/stash/0.7.0-rc.5/welcome/changelog/
 aliases:
-  - /products/stash/0.7.0-rc.3/CHANGELOG/
+  - /products/stash/0.7.0-rc.5/CHANGELOG/
 ---
 
 # Change Log
 
 ## [Unreleased](https://github.com/appscode/stash/tree/HEAD)
 
-[Full Changelog](https://github.com/appscode/stash/compare/0.7.0-rc.3...HEAD)
+[Full Changelog](https://github.com/appscode/stash/compare/0.7.0-rc.4...HEAD)
+
+**Fixed bugs:**
+
+- Fix storage implementation for snapshots [\#497](https://github.com/appscode/stash/pull/497) ([tamalsaha](https://github.com/tamalsaha))
+
+**Merged pull requests:**
+
+- Update changelog [\#495](https://github.com/appscode/stash/pull/495) ([tamalsaha](https://github.com/tamalsaha))
+
+## [0.7.0-rc.4](https://github.com/appscode/stash/tree/0.7.0-rc.4) (2018-05-22)
+[Full Changelog](https://github.com/appscode/stash/compare/0.7.0-rc.3...0.7.0-rc.4)
 
 **Fixed bugs:**
 
 - Restic sidecar not properly working because of image tag error [\#443](https://github.com/appscode/stash/issues/443)
+- Removed owner reference from repo-reader role-binding [\#484](https://github.com/appscode/stash/pull/484) ([emruz-hossain](https://github.com/emruz-hossain))
 - Permit stash operator to perform pods/exec [\#433](https://github.com/appscode/stash/pull/433) ([tamalsaha](https://github.com/tamalsaha))
 - Add missing batch jobs get RBAC permission [\#419](https://github.com/appscode/stash/pull/419) ([galexrt](https://github.com/galexrt))
 
 **Closed issues:**
 
+- Stash restore pod fails with istio sidecar [\#475](https://github.com/appscode/stash/issues/475)
+- Stash stores GCS credentials in /tmp with 644 permissions [\#470](https://github.com/appscode/stash/issues/470)
+- Update minio doc for 1.10? [\#467](https://github.com/appscode/stash/issues/467)
 - Fix docs for StatefulSet [\#444](https://github.com/appscode/stash/issues/444)
 - Support Repository deletion [\#416](https://github.com/appscode/stash/issues/416)
 - Docs TODO [\#414](https://github.com/appscode/stash/issues/414)
@@ -37,6 +52,35 @@ aliases:
 
 **Merged pull requests:**
 
+- Delete user roles on purge. [\#494](https://github.com/appscode/stash/pull/494) ([tamalsaha](https://github.com/tamalsaha))
+- Add app: stash label to user roles. [\#493](https://github.com/appscode/stash/pull/493) ([tamalsaha](https://github.com/tamalsaha))
+- Use post-install hooks to install admission controller in chart [\#492](https://github.com/appscode/stash/pull/492) ([tamalsaha](https://github.com/tamalsaha))
+- Update changelog [\#491](https://github.com/appscode/stash/pull/491) ([tamalsaha](https://github.com/tamalsaha))
+- Avoid creating apiservice when webhooks are not used. [\#490](https://github.com/appscode/stash/pull/490) ([tamalsaha](https://github.com/tamalsaha))
+- Install correct version of stash chart [\#489](https://github.com/appscode/stash/pull/489) ([tamalsaha](https://github.com/tamalsaha))
+- Use wait-until instead of fixed delay  [\#488](https://github.com/appscode/stash/pull/488) ([emruz-hossain](https://github.com/emruz-hossain))
+- Concourse [\#486](https://github.com/appscode/stash/pull/486) ([tahsinrahman](https://github.com/tahsinrahman))
+- Prepare docs for 0.7.0-rc.4 [\#483](https://github.com/appscode/stash/pull/483) ([tamalsaha](https://github.com/tamalsaha))
+- Revendor [\#481](https://github.com/appscode/stash/pull/481) ([tamalsaha](https://github.com/tamalsaha))
+- Fix enableRBAC  flag for sidecar [\#480](https://github.com/appscode/stash/pull/480) ([emruz-hossain](https://github.com/emruz-hossain))
+- Typo \(`Weclome` → `Welcome`\) in page title [\#479](https://github.com/appscode/stash/pull/479) ([eliasp](https://github.com/eliasp))
+- Add support for initial backoff to the apiserver call on recover [\#476](https://github.com/appscode/stash/pull/476) ([farcaller](https://github.com/farcaller))
+- Support recovering from repository in different namespace [\#474](https://github.com/appscode/stash/pull/474) ([tamalsaha](https://github.com/tamalsaha))
+- Update docs \(run minio in v1.9.4+ cluster and add example yaml files in respective backends\) [\#473](https://github.com/appscode/stash/pull/473) ([emruz-hossain](https://github.com/emruz-hossain))
+- Limit the GCS file permissions to owner only [\#472](https://github.com/appscode/stash/pull/472) ([farcaller](https://github.com/farcaller))
+- Fix a typo [\#471](https://github.com/appscode/stash/pull/471) ([farcaller](https://github.com/farcaller))
+- Don't panic if admission options is nil [\#469](https://github.com/appscode/stash/pull/469) ([tamalsaha](https://github.com/tamalsaha))
+- Disable admission controllers for webhook server [\#468](https://github.com/appscode/stash/pull/468) ([tamalsaha](https://github.com/tamalsaha))
+- Use new UpdateRecoveryStatus method [\#466](https://github.com/appscode/stash/pull/466) ([tamalsaha](https://github.com/tamalsaha))
+- Add Update\*\*\*Status helpers [\#465](https://github.com/appscode/stash/pull/465) ([tamalsaha](https://github.com/tamalsaha))
+- Added SSL support for deleting restic repository from Minio backend [\#464](https://github.com/appscode/stash/pull/464) ([emruz-hossain](https://github.com/emruz-hossain))
+- Update client-go to 7.0.0 [\#463](https://github.com/appscode/stash/pull/463) ([tamalsaha](https://github.com/tamalsaha))
+- Rename webhook files in chart [\#460](https://github.com/appscode/stash/pull/460) ([tamalsaha](https://github.com/tamalsaha))
+- Update workload api [\#459](https://github.com/appscode/stash/pull/459) ([tamalsaha](https://github.com/tamalsaha))
+- Remove stash crds before uninstalling operator [\#458](https://github.com/appscode/stash/pull/458) ([tamalsaha](https://github.com/tamalsaha))
+- Export kube-ca only if required [\#457](https://github.com/appscode/stash/pull/457) ([tamalsaha](https://github.com/tamalsaha))
+- Improve installer [\#456](https://github.com/appscode/stash/pull/456) ([tamalsaha](https://github.com/tamalsaha))
+- Update changelog [\#455](https://github.com/appscode/stash/pull/455) ([tamalsaha](https://github.com/tamalsaha))
 - Various installer fixes [\#454](https://github.com/appscode/stash/pull/454) ([tamalsaha](https://github.com/tamalsaha))
 - Update workload client [\#453](https://github.com/appscode/stash/pull/453) ([tamalsaha](https://github.com/tamalsaha))
 - Update workload client [\#452](https://github.com/appscode/stash/pull/452) ([tamalsaha](https://github.com/tamalsaha))
