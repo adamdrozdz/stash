@@ -95,8 +95,8 @@ export STASH_ENABLE_RBAC=true
 export STASH_RUN_ON_MASTER=0
 export STASH_ENABLE_VALIDATING_WEBHOOK=false
 export STASH_ENABLE_MUTATING_WEBHOOK=false
-export STASH_DOCKER_REGISTRY=appscode
-export STASH_IMAGE_TAG=0.7.0-rc.3
+export STASH_DOCKER_REGISTRY=${DOCKER_REGISTRY:-appscode}
+export STASH_IMAGE_TAG=0.7.0-rc.5
 export STASH_IMAGE_PULL_SECRET=
 export STASH_IMAGE_PULL_POLICY=IfNotPresent
 export STASH_ENABLE_ANALYTICS=true
@@ -104,7 +104,7 @@ export STASH_UNINSTALL=0
 export STASH_PURGE=0
 
 export APPSCODE_ENV=${APPSCODE_ENV:-prod}
-export SCRIPT_LOCATION="curl -fsSL https://raw.githubusercontent.com/appscode/stash/0.7.0-rc.3/"
+export SCRIPT_LOCATION="curl -fsSL https://raw.githubusercontent.com/appscode/stash/0.7.0-rc.5/"
 if [ "$APPSCODE_ENV" = "dev" ]; then
     detect_tag
     export SCRIPT_LOCATION="cat "
@@ -212,34 +212,6 @@ while test $# -gt 0; do
 done
 
 if [ "$STASH_UNINSTALL" -eq 1 ]; then
-    # https://github.com/kubernetes/kubernetes/issues/60538
-    if [ "$STASH_PURGE" -eq 1 ]; then
-        for crd in "${crds[@]}"; do
-            pairs=($(kubectl get ${crd}.stash.appscode.com --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.namespace} {end}' || true))
-            total=${#pairs[*]}
-
-            # save objects
-            if [ $total -gt 0 ]; then
-                echo "dumping ${crd} objects into ${crd}.yaml"
-                kubectl get ${crd}.stash.appscode.com --all-namespaces -o yaml > ${crd}.yaml
-            fi
-
-            for (( i=0; i<$total; i+=2 )); do
-                name=${pairs[$i]}
-                namespace=${pairs[$i + 1]}
-                # delete crd object
-                echo "deleting ${crd} $namespace/$name"
-                kubectl delete ${crd}.stash.appscode.com $name -n $namespace
-            done
-
-            # delete crd
-            kubectl delete crd ${crd}.stash.appscode.com || true
-        done
-
-        echo "waiting 5 seconds ..."
-        sleep 5;
-    fi
-
     # delete webhooks and apiservices
     kubectl delete validatingwebhookconfiguration -l app=stash || true
     kubectl delete mutatingwebhookconfiguration -l app=stash || true
@@ -264,6 +236,34 @@ if [ "$STASH_UNINSTALL" -eq 1 ]; then
         fi
        sleep 2
     done
+
+    # https://github.com/kubernetes/kubernetes/issues/60538
+    if [ "$STASH_PURGE" -eq 1 ]; then
+        for crd in "${crds[@]}"; do
+            pairs=($(kubectl get ${crd}.stash.appscode.com --all-namespaces -o jsonpath='{range .items[*]}{.metadata.name} {.metadata.namespace} {end}' || true))
+            total=${#pairs[*]}
+
+            # save objects
+            if [ $total -gt 0 ]; then
+                echo "dumping ${crd} objects into ${crd}.yaml"
+                kubectl get ${crd}.stash.appscode.com --all-namespaces -o yaml > ${crd}.yaml
+            fi
+
+            for (( i=0; i<$total; i+=2 )); do
+                name=${pairs[$i]}
+                namespace=${pairs[$i + 1]}
+                # delete crd object
+                echo "deleting ${crd} $namespace/$name"
+                kubectl delete ${crd}.stash.appscode.com $name -n $namespace
+            done
+
+            # delete crd
+            kubectl delete crd ${crd}.stash.appscode.com || true
+        done
+
+        # delete user roles
+        kubectl delete clusterroles appscode:stash:edit appscode:stash:view
+    fi
 
     echo
     echo "Successfully uninstalled Stash!"
@@ -307,10 +307,12 @@ if [ "$STASH_RUN_ON_MASTER" -eq 1 ]; then
       --patch="$(${SCRIPT_LOCATION}hack/deploy/run-on-master.yaml)"
 fi
 
+if [ "$STASH_ENABLE_VALIDATING_WEBHOOK" = true ] || [ "$STASH_ENABLE_MUTATING_WEBHOOK" = true ]; then
+    ${SCRIPT_LOCATION}hack/deploy/apiservices.yaml | $ONESSL envsubst | kubectl apply -f -
+fi
 if [ "$STASH_ENABLE_VALIDATING_WEBHOOK" = true ]; then
     ${SCRIPT_LOCATION}hack/deploy/validating-webhook.yaml | $ONESSL envsubst | kubectl apply -f -
 fi
-
 if [ "$STASH_ENABLE_MUTATING_WEBHOOK" = true ]; then
     ${SCRIPT_LOCATION}hack/deploy/mutating-webhook.yaml | $ONESSL envsubst | kubectl apply -f -
 fi
